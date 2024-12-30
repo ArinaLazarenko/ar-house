@@ -1,0 +1,30 @@
+name: ar_vis
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.0 <4.0.0'
+  flutter: ">=3.3.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_embed_unity_2022_3_android: ^1.1.1
+  flutter_embed_unity: ^1.2.3
+  intl: any
+
+
+dev_dependencies:
+  integration_test:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.3
+
+
+flutter:
+  uses-material-design: true
