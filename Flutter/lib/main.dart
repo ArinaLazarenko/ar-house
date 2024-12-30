@@ -3,17 +3,17 @@ import 'package:flutter_embed_unity/flutter_embed_unity.dart';
 import 'package:intl/intl.dart';
 
 void main() {
-  runApp(const ExampleApp());
+  runApp(const ArAppWidget());
 }
 
-class ExampleApp extends StatefulWidget {
-  const ExampleApp({super.key});
+class ArAppWidget extends StatefulWidget {
+  const ArAppWidget({super.key});
 
   @override
-  State<ExampleApp> createState() => _ExampleAppState();
+  State<ArAppWidget> createState() => _ArAppState();
 }
 
-class _ExampleAppState extends State<ExampleApp> {
+class _ArAppState extends State<ArAppWidget> {
   static final _fixedLocaleNumberFormatter = NumberFormat.decimalPatternDigits(
     locale: 'en_gb',
     decimalDigits: 2,
