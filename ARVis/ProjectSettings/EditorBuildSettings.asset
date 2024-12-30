@@ -6,10 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Example/Scenes/FlutterEmbedExampleScene.unity
+    path: Assets/Example/Scenes/StartScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Example/Scenes/FlutterEmbedExampleSceneAR.unity
+    path: Assets/Example/Scenes/ArScene.unity
     guid: c39b9dfab960f5f48bef5c5cb5ecc4b6
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 814ab6c01ebf3674a989665a56cc192f,

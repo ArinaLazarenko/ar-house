@@ -95,8 +95,8 @@ class _ExampleAppState extends State<ExampleApp> {
                                     "SceneSwitcher",
                                     "SwitchToScene",
                                     _isArSceneActive
-                                        ? "FlutterEmbedExampleScene"
-                                        : "FlutterEmbedExampleSceneAR",
+                                        ? "StartScene"
+                                        : "ArScene",
                                   );
                                   setState(() {
                                     _isArSceneActive = value;
