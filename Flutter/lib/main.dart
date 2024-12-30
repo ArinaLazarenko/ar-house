@@ -21,7 +21,7 @@ class _ArAppState extends State<ArAppWidget> {
 
   bool? _isUnityArSupportedOnDevice;
   bool _isArSceneActive = false;
-  double _rotation = 30;
+  double _rotation = -200;
 
   @override
   Widget build(BuildContext context) {
