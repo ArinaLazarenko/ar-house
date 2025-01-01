@@ -13,7 +13,6 @@ public class SendToFlutterSceneLoaded : MonoBehaviour
         SendToFlutter.Send("scene_loaded");
     }
 
-    // called when the game is terminated
     void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;

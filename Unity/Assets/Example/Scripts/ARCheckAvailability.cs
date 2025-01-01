@@ -14,26 +14,21 @@ namespace Assets.Scripts
         }
 
         IEnumerator CheckAvailabilityCoroutine() {
-
-            Debug.Log("ARCheckAvailability: check");
-
             if ((ARSession.state == ARSessionState.None) ||
                 (ARSession.state == ARSessionState.CheckingAvailability) ||
                 (ARSession.state == ARSessionState.Installing))
             {
-                Debug.Log("ARCheckAvailability: checking...");
                 yield return ARSession.CheckAvailability();
             }
 
             if (ARSession.state == ARSessionState.Unsupported)
             {
-                Debug.Log("ARCheckAvailability: unsupported");
                 SendToFlutter.Send("ar:false");
             }
             else
             {
-                Debug.Log("ARCheckAvailability: available");
                 SendToFlutter.Send("ar:true");
+                SendToFlutter.Send("info:This is a two-story modern house with a flat roof and a large balcony on the upper floor, featuring railings across its length. The lower floor includes an open patio area, pillars supporting the structure, and a large garage-style door on the right side.");
             }
         }
     }

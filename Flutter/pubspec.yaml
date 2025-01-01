@@ -14,7 +14,9 @@ dependencies:
 
   flutter_embed_unity_2022_3_android: ^1.1.1
   flutter_embed_unity: ^1.2.3
+  flutter_joystick: ^0.2.1
   intl: any
+  flutter_material_design_icons: ^1.1.7447
 
 
 dev_dependencies:
