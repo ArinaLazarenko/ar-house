@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using System;
+using UnityEngine.InputSystem.EnhancedTouch;
 
 public class ARLogoPinner : MonoBehaviour
 {
@@ -17,34 +18,45 @@ public class ARLogoPinner : MonoBehaviour
     private bool haveFoundSurface = false;
     private bool controlledByFlutter = false;
 
+    void Awake()
+    {
+        // Required for input polling in new input system
+        EnhancedTouchSupport.Enable();
+    }
+
+    void OnDestroy()
+    {
+        EnhancedTouchSupport.Disable();
+    }
+
+
     void Update()
     {
-        if (controlledByFlutter)
+        if (UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count > 0
+        && UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[0].began)
         {
-            return;
-        }
 
-        Vector2 screenPosition = Camera.main.ViewportToScreenPoint(new Vector2(cursorRaycastX, cursorRaycastY));
-        List<ARRaycastHit> hits = new List<ARRaycastHit>();
-        raycastManager.Raycast(screenPosition, hits, UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon);
+            flutterLogo.SetActive(true);
+            Console.WriteLine("Touched");
+            Vector2 touchPosition = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[0].screenPosition;
+            Console.WriteLine("Screen position: " + touchPosition.ToString());
+            List<ARRaycastHit> hits = new();
 
-        if (hits.Count > 0)
-        {
-            flutterLogo.transform.position = hits[0].pose.position;
-            float scaleRelativeToDistance = hits[0].distance / 8f;
-            flutterLogo.transform.localScale = new Vector3(scaleRelativeToDistance, scaleRelativeToDistance, scaleRelativeToDistance);
-            haveFoundSurface = true;
-            SendToFlutter.Send("scale:" + flutterLogo.transform.localScale.x.ToString());
-            SendToFlutter.Send("position:" + flutterLogo.transform.position.ToString());
-        }
-        else if (!haveFoundSurface)
-        {
-            flutterLogo.transform.position = Camera.main.ViewportToWorldPoint(
-                new Vector3(noSurfaceMannequinPositionX, noSurfaceMannequinPositionY, noSurfaceMannequinDistanceFromCamera)
-            );
-            flutterLogo.transform.localScale = Vector3.one;
-            SendToFlutter.Send("scale:" + flutterLogo.transform.localScale.x.ToString());
-            SendToFlutter.Send("position:" + flutterLogo.transform.position.ToString());
+            // Perform a raycast from the touch position
+            if (raycastManager.Raycast(touchPosition, hits, UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon))
+            {
+                // Surface was detected, use that as the logo position
+                flutterLogo.transform.localPosition = hits[0].pose.position;
+                Console.WriteLine("Abs: " + flutterLogo.transform.position.ToString());
+                Console.WriteLine("Local: " + flutterLogo.transform.localPosition.ToString());
+                Console.WriteLine("hit pose: " + hits[0].pose.ToString());
+
+                haveFoundSurface = true;
+            }
+            else if (!haveFoundSurface)
+            {
+                flutterLogo.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(noSurfaceMannequinPositionX, noSurfaceMannequinPositionY, noSurfaceMannequinDistanceFromCamera));
+            }
         }
     }
 

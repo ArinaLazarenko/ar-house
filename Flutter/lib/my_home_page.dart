@@ -17,10 +17,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool? _isUnityArSupportedOnDevice;
   bool _isArSceneActive = false;
   double _rotation = 0;
-  double _xPosition = 0.0;
-  double _yPosition = 0.0;
-  double _zPosition = 0.0;
-  final double step = 0.1;
+  double _xDirection = 0.0;
+  double _zDirection = 0.0;
 
   final NumberFormat _fixedLocaleNumberFormatter =
       NumberFormat.decimalPatternDigits(
@@ -33,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return _isUnityArSupportedOnDevice! ? "supported" : "not supported";
   }
 
-  double _scale = 1.0;
+  double _scale = 0.2;
   List<double> scales = [0.1, 0.2, 0.3, 0.5, 0.7, 1.0];
 
   String _houseInfo = "";
@@ -60,10 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: JoystickMove(
                           onChange: (details) {
                             setState(() {
-                              _xPosition = (_xPosition + step * details.x)
-                                  .clamp(-10, 10);
-                              _zPosition = (_zPosition + step * (-details.y))
-                                  .clamp(-10, 10);
+                              _xDirection = details.x;
+                              _zDirection = -details.y;
                             });
                             _sendPositionToUnity();
                           },
@@ -171,14 +167,15 @@ class _MyHomePageState extends State<MyHomePage> {
   void _handleUnityMessage(String data) {
     if (data == "scene_loaded") {
       _sendRotationToUnity(_rotation);
+      _sendScaleToUnity(_scale);
     } else if (data == "ar:true") {
       setState(() => _isUnityArSupportedOnDevice = true);
     } else if (data == "ar:false") {
       setState(() => _isUnityArSupportedOnDevice = false);
     } else if (data.contains("scale")) {
       _setDefaultScale(data);
-    } else if (data.contains("position:")) {
-      _setDefaultPosition(data);
+    // } else if (data.contains("position:")) {
+    //   _setDefaultPosition(data);
     } else if (data.contains("info:")) {
       _setMessageInfo(data);
     }
@@ -196,23 +193,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _setDefaultPosition(String data) {
-    String positionData =
-        data.substring(data.indexOf("position:") + "position:".length).trim();
-    positionData = positionData.replaceAll("(", "").replaceAll(")", "");
-    List<String> coordinates = positionData.split(",");
-    if (coordinates.length == 3) {
-      double x = double.tryParse(coordinates[0].trim()) ?? 0.0;
-      double y = double.tryParse(coordinates[1].trim()) ?? 0.0;
-      double z = double.tryParse(coordinates[2].trim()) ?? 0.0;
-      setState(() {
-        _xPosition = x;
-        _yPosition = y;
-        _zPosition = z;
-      });
-    }
-  }
-
   void _setMessageInfo(String data) {
     String info = data.substring(data.indexOf("info:") + "info:".length).trim();
     setState(() => _houseInfo = info);
@@ -228,7 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
           : "FlutterEmbedExampleSceneAR",
     );
     setState(() {
-      _scale = 1.0;
+      _scale = 0.1;
       _isArSceneActive = value;
     });
   }
@@ -250,28 +230,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _sendRotationToUnity(double rotation) {
     sendToUnity(
-      "FlutterLogo",
+      "House",
       "SetRotation",
       _fixedLocaleNumberFormatter.format(rotation),
     );
   }
 
   void _sendPositionToUnity() {
-    sendToUnity("FlutterLogo", "SetControlledByFlutter", "true");
+    sendToUnity("House", "SetControlledByFlutter", "true");
     sendToUnity(
-        "FlutterLogo", "SetPosition", "$_xPosition,$_yPosition,$_zPosition");
+        "House", "SetDirection", "$_xDirection,0,$_zDirection");
   }
 
   void _sendScaleToUnity(double scale) {
-    sendToUnity("FlutterLogo", "SetControlledByFlutter", "true");
+    sendToUnity("House", "SetControlledByFlutter", "true");
     sendToUnity(
-      "FlutterLogo",
+      "House",
       "SetScale",
       _fixedLocaleNumberFormatter.format(scale),
     );
   }
 
   void _enableARControl() {
-    sendToUnity("FlutterLogo", "SetControlledByFlutter", "false");
+    sendToUnity("House", "SetControlledByFlutter", "false");
   }
 }
